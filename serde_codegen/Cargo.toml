@@ -1,14 +1,12 @@
 [package]
-name = "serde_macros"
-version = "0.3.3"
+name = "serde_codegen"
+version = "0.3.2"
 authors = ["Erick Tryzelaar <erick.tryzelaar@gmail.com>"]
 license = "MIT/Apache-2.0"
 description = "Macros to auto-generate implementations for the serde framework"
 repository = "https://github.com/erickt/rust-serde"
 
-[lib]
-name = "serde_macros"
-plugin = true
-
 [dependencies]
-serde_codegen = { version = "*", path = "../serde_codegen" }
+aster = "*"
+quasi = "*"
+quasi_macros = "*"
