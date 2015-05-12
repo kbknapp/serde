@@ -1,9 +1,9 @@
-use syntax::ast;
-use syntax::attr;
-use syntax::ext::base::ExtCtxt;
-use syntax::ptr::P;
+use super::aster;
 
-use aster;
+use super::syntax::ast;
+use super::syntax::attr;
+use super::syntax::ext::base::ExtCtxt;
+use super::syntax::ptr::P;
 
 pub enum Direction {
     Serialize,

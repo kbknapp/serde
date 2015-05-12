@@ -1,4 +1,4 @@
-use syntax::ast::{
+use super::syntax::ast::{
     Ident,
     MetaItem,
     Item,
@@ -6,15 +6,15 @@ use syntax::ast::{
     StructDef,
     EnumDef,
 };
-use syntax::ast;
-use syntax::codemap::Span;
-use syntax::ext::base::ExtCtxt;
-use syntax::ext::build::AstBuilder;
-use syntax::ptr::P;
+use super::syntax::ast;
+use super::syntax::codemap::Span;
+use super::syntax::ext::base::ExtCtxt;
+use super::syntax::ext::build::AstBuilder;
+use super::syntax::ptr::P;
 
-use aster;
+use super::aster;
 
-use field;
+use super::field;
 
 pub fn expand_derive_deserialize(
     cx: &mut ExtCtxt,
@@ -556,35 +556,33 @@ fn deserialize_field_visitor(
         })
         .collect();
 
-    vec![
-        field_enum,
+    let impl_item = quote_item!(cx,
+        impl ::serde::de::Deserialize for __Field {
+            #[inline]
+            fn deserialize<D>(deserializer: &mut D) -> ::std::result::Result<__Field, D::Error>
+                where D: ::serde::de::Deserializer,
+            {
+                struct __FieldVisitor;
 
-        quote_item!(cx,
-            impl ::serde::de::Deserialize for __Field {
-                #[inline]
-                fn deserialize<D>(deserializer: &mut D) -> ::std::result::Result<__Field, D::Error>
-                    where D: ::serde::de::Deserializer,
-                {
-                    struct __FieldVisitor;
+                impl ::serde::de::Visitor for __FieldVisitor {
+                    type Value = __Field;
 
-                    impl ::serde::de::Visitor for __FieldVisitor {
-                        type Value = __Field;
-
-                        fn visit_str<E>(&mut self, value: &str) -> ::std::result::Result<__Field, E>
-                            where E: ::serde::de::Error,
-                        {
-                            match value {
-                                $field_arms
-                                _ => Err(::serde::de::Error::unknown_field_error(value)),
-                            }
+                    fn visit_str<E>(&mut self, value: &str) -> ::std::result::Result<__Field, E>
+                        where E: ::serde::de::Error,
+                    {
+                        match value {
+                            $field_arms
+                            _ => Err(::serde::de::Error::unknown_field_error(value)),
                         }
                     }
-
-                    deserializer.visit(__FieldVisitor)
                 }
+
+                deserializer.visit(__FieldVisitor)
             }
-        ).unwrap(),
-    ]
+        }
+    ).unwrap();
+
+    vec![field_enum, impl_item]
 }
 
 fn deserialize_struct_visitor(

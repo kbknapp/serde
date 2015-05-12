@@ -5,8 +5,25 @@ authors = ["Erick Tryzelaar <erick.tryzelaar@gmail.com>"]
 license = "MIT/Apache-2.0"
 description = "Macros to auto-generate implementations for the serde framework"
 repository = "https://github.com/erickt/rust-serde"
+build = "build.rs"
+
+[features]
+default = ["aster-syntex", "syntex", "syntex_syntax", "quasi/default", "quasi_codegen"]
+nightly = ["aster-syntax", "quasi/nightly", "quasi_macros"]
+
+[build-dependencies]
+syntex = { version = "*", path = "../../rust-syntex", optional = true }
+aster-syntax = { version = "*", path = "../../rust-aster/aster-syntax", optional = true }
+aster-syntex = { version = "*", path = "../../rust-aster/aster-syntex", optional = true }
+quasi = { verision = "*", path = "../../rust-quasi", optional = true }
+quasi_macros = { verision = "*", path = "../../rust-quasi/quasi_macros", optional = true }
+quasi_codegen = { verision = "*", path = "../../rust-quasi/quasi_codegen", optional = true }
 
 [dependencies]
-aster = "*"
-quasi = "*"
-quasi_macros = "*"
+syntex = { version = "*", path = "../../rust-syntex", optional = true }
+syntex_syntax = { version = "*", path = "../../rust-syntex/syntex_syntax", optional = true }
+aster-syntax = { version = "*", path = "../../rust-aster/aster-syntax", optional = true }
+aster-syntex = { version = "*", path = "../../rust-aster/aster-syntex", optional = true }
+quasi = { verision = "*", path = "../../rust-quasi", default-features = false, optional = true }
+quasi_macros = { verision = "*", path = "../../rust-quasi/quasi_macros", optional = true }
+quasi_codegen = { verision = "*", path = "../../rust-quasi/quasi_codegen", optional = true }

@@ -1,26 +1,44 @@
-#![cfg_attr(not(feature = "syntex"), feature(custom_derive, rustc_private, unboxed_closures))]
-#![cfg_attr(not(feature = "syntex"), plugin(quasi_macros))]
+#![cfg_attr(feature = "nightly", feature(rustc_private, plugin))]
+#![cfg_attr(feature = "nightly", plugin(quasi_macros))]
 
-extern crate aster;
 extern crate quasi;
 
-#[cfg(feature = "syntex")]
-extern crate syntex;
+#[cfg(feature = "nightly")]
+pub mod syntax {
+    extern crate syntax;
+    extern crate rustc;
+
+    mod inner {
+        extern crate aster_syntax as aster;
+        pub use super::syntax;
+
+        include!("lib.rs.in");
+    }
+
+    pub fn register(reg: &mut rustc::plugin::Registry) {
+        reg.register_syntax_extension(
+            syntax::parse::token::intern("derive_Serialize"),
+            syntax::ext::base::Decorator(Box::new(inner::ser::expand_derive_serialize)));
+
+        reg.register_syntax_extension(
+            syntax::parse::token::intern("derive_Deserialize"),
+            syntax::ext::base::Decorator(Box::new(inner::de::expand_derive_deserialize)));
+    }
+}
 
 #[cfg(feature = "syntex")]
-extern crate syntex_syntax as syntax;
+pub mod syntex {
+    extern crate syntex;
 
-#[cfg(not(feature = "syntex"))]
-extern crate syntax;
+    mod inner {
+        extern crate aster_syntex as aster;
+        extern crate syntex_syntax as syntax;
 
-#[cfg(feature = "syntex")]
-include!(concat!(env!("OUT_DIR"), "lib.rs"));
+        include!(concat!(env!("OUT_DIR"), "/lib.rs"));
+    }
 
-#[cfg(not(feature = "syntex"))]
-include!("lib.rs.in"));
-
-#[cfg(feature = "syntex")]
-pub fn register(reg: &mut syntex::Registry) {
-    reg.register_decorator("derive_Serialize", ser::expand_derive_serialize);
-    reg.register_decorator("derive_Deserialize", ser::expand_derive_deserialize);
+    pub fn register(reg: &mut syntex::Registry) {
+        reg.register_decorator("derive_Serialize", inner::ser::expand_derive_serialize);
+        reg.register_decorator("derive_Deserialize", inner::de::expand_derive_deserialize);
+    }
 }

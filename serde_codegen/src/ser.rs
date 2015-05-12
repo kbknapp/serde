@@ -1,19 +1,19 @@
-use syntax::ast::{
+use super::syntax::ast::{
     Ident,
     MetaItem,
     Item,
     Expr,
     StructDef,
 };
-use syntax::ast;
-use syntax::codemap::Span;
-use syntax::ext::base::ExtCtxt;
-use syntax::ext::build::AstBuilder;
-use syntax::ptr::P;
+use super::syntax::ast;
+use super::syntax::codemap::Span;
+use super::syntax::ext::base::ExtCtxt;
+use super::syntax::ext::build::AstBuilder;
+use super::syntax::ptr::P;
 
-use aster;
+use super::aster;
 
-use field::{Direction, struct_field_strs};
+use super::field::{Direction, struct_field_strs};
 
 pub fn expand_derive_serialize(
     cx: &mut ExtCtxt,
