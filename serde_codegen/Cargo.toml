@@ -13,12 +13,12 @@ nightly = ["quasi_macros"]
 with-syntex = ["quasi/with-syntex", "quasi_codegen/with-syntex", "syntex", "syntex_syntax"]
 
 [build-dependencies]
-quasi_codegen = { verision = "*", optional = true }
-syntex = { version = "*", optional = true }
+quasi_codegen = { verision = "*", path = "../../rust-quasi/quasi_codegen", optional = true }
+syntex = { version = "*", path = "../../rust-syntex/syntex", optional = true }
 
 [dependencies]
-aster = { version = "*", default-features = false }
-quasi = { verision = "*", default-features = false }
-quasi_macros = { version = "*", optional = true }
-syntex = { version = "*", optional = true }
-syntex_syntax = { version = "*", optional = true }
+aster = { version = "*", path = "../../rust-aster", default-features = false }
+quasi = { verision = "*", path = "../../rust-quasi/quasi", default-features = false }
+quasi_macros = { version = "*", path = "../../rust-quasi/quasi_macros", optional = true }
+syntex = { version = "*", path = "../../rust-syntex/syntex", optional = true }
+syntex_syntax = { version = "*", path = "../../rust-syntex/syntex_syntax", optional = true }
