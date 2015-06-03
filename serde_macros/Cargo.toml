@@ -11,6 +11,6 @@ name = "serde_macros"
 plugin = true
 
 [dependencies]
-aster = "*"
+aster = {git = "https://github.com/kbknapp/rust-aster"}
 quasi = "*"
 quasi_macros = "*"
